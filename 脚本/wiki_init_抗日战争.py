@@ -129,7 +129,7 @@ def generate_cross_links(source_cat, source_name, wiki_files, max_links=10):
     related = []
     for fname, fpath in wiki_files.get(source_cat, []):
         if fname != source_name:
-            related.append(f'- [[{source_cat}/{fname}]]')
+            related.append(f'- [[{fname}]]')
 
     total = len(related)
     if total > max_links:
