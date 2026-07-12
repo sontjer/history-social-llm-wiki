@@ -38,16 +38,69 @@ def ensure_dirs():
 
 
 def get_files_from_raw():
-    """扫描 raw/ 下所有 .md 文件，返回 {分类: [(文件名, 路径)]}"""
-    result = {}
-    for cat in CATEGORIES:
-        cat_dir = RAW_DIR / cat
-        if not cat_dir.exists():
-            continue
-        files = sorted(cat_dir.glob('*.md'))
-        if files:
-            result[cat] = [(f.stem, f) for f in files]
+    """扫描 raw/ 下平铺的 .md 文件，用 classify() 分类"""
+    result = {cat: [] for cat in CATEGORIES}
+    for f in sorted(RAW_DIR.glob('*.md')):
+        cat = classify(f.name)
+        result[cat].append((f.stem, f))
     return result
+
+
+def classify(filename: str) -> str:
+    """基于文件名关键词分类（与二战库模式一致）"""
+    name = filename.lower()
+    
+    # 时间线（优先匹配）
+    if any(kw in name for kw in ['年表', '时间线', '大事记',
+                                   'chronology', 'timeline', '年谱',
+                                   '中国抗日战争']):
+        return '时间线'
+    
+    # 装备与技术（优先于战役，避免轰炸机等被战役截胡）
+    if any(kw in name for kw in ['坦克', '飞机', '战斗机', '轰炸机', '枪', '炮',
+                                   'tank', 'aircraft', 'ship', 'weapon',
+                                   '武器', '装备', '技术']):
+        return '装备与技术'
+    if any(kw in name for kw in ['战役', '会战', '會戰', '登陆', '事件', '进攻',
+                                   'battle', 'campaign', 'invasion', 'operation',
+                                   'attack', 'raid', 'conference', '会议',
+                                   '事变', '惨案', '大屠杀', '保卫战', '伏击战',
+                                   '远征军', '投降', '百团', '抗日']):
+        return '战役'
+    if any(kw in name for kw in ['人物', '将军', '元帅', '首相', '总统', '将',
+                                   'general', 'admiral', 'marshal', 'president',
+                                   'premier', 'chancellor', 'chairman', '领袖',
+                                   '毛泽东', '蒋介石', '斯大林', '罗斯福', '希特勒',
+                                   '周恩来', '朱德', '彭德怀', '林彪', '刘伯承',
+                                   '陈赓', '陈诚', '陳誠', '聂荣臻', '左权', '杨靖宇',
+                                   '赵尚志', '赵登禹', '张自忠', '张学良', '佟麟阁',
+                                   '戴安澜', '杜聿明', '薛岳', '李宗仁', '傅作义',
+                                   '孙立人', '孫立人', '松井石根', '冈村宁次',
+                                   '东条英机', '東條英機']):
+        # 排除 "汪精卫国民政府"（是概念,不是人物）
+        if '汪精卫国民政府' in name or '汪精衛國民政府' in name:
+            pass
+        else:
+            return '人物'
+    # 单独处理汪精卫（排除汪精卫国民政府）
+    if any(kw in name for kw in ['汪精卫', '汪精衛']):
+        if '汪精卫国民政府' not in name and '汪精衛國民政府' not in name:
+            return '人物'
+    if any(kw in name for kw in ['战场', '战线', '战区', 'theatre', 'front',
+                                   '太平洋', '欧洲', '北非', '大西洋', '地中海',
+                                   '东线', '西线', '南线', '缅甸']):
+        return '战场'
+    if any(kw in name for kw in ['集团军', '舰队', '军队', '部队', '编制',
+                                   'army', 'fleet', 'division', 'corps',
+                                   '海军', '空军', '陆军', '军', '师', '联队',
+                                   '八路军', '新四军', '关东军', '国民革命军',
+                                   '國民革命軍']):
+        return '部队编制'
+    if any(kw in name for kw in ['年表', '时间线', '大事记', 'chronology',
+                                   'timeline', '年谱']):
+        return '时间线'
+    
+    return '概念与政策'  # 默认兜底
 
 
 def read_file_content(path):
