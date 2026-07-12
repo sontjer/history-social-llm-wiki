@@ -14,7 +14,7 @@ from pathlib import Path
 BASE_DIR = Path('/mnt/webdav/Study of War of Anti-Japan')
 RAW_DIR = BASE_DIR / 'raw'
 WIKI_DIR = BASE_DIR / 'wiki'
-INDEX_DIR = WIKI_DIR / '📑索引'
+INDEX_DIR = BASE_DIR / 'wiki' / '📑索引'
 LOG_FILE = BASE_DIR / 'log.md'
 
 CATEGORIES = {
