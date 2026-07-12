@@ -29,6 +29,12 @@ def classify(filename: str) -> str:
     """基于文件名关键词的简单分类"""
     name = filename.lower()
     
+    # 装备与技术（必须放在战役之前，避免"轰炸机"中的"轰炸"被战役截胡）
+    if any(kw in name for kw in ['坦克', '飞机', '战斗机', '轰炸机', '舰', '兵器', '枪', '炮',
+                                   'tank', 'aircraft', 'ship', 'weapon',
+                                   '技术', '装备', '武器', '密码', '炸弹',
+                                   '火箭', '雷达', '声呐', '航母', '潜艇', '曼哈顿']):
+        return '装备与技术'
     if any(kw in name for kw in ['战役', '会战', '登陆', '事件', '进攻', '投降',
                                    'battle', 'campaign', 'invasion', 'operation',
                                    'attack', 'raid', 'conference', '会议',
@@ -55,11 +61,6 @@ def classify(filename: str) -> str:
                                    'army', 'fleet', 'division', 'corps',
                                    '海军', '空军', '陆军', '军', '师', '联队']):
         return '部队编制'
-    if any(kw in name for kw in ['坦克', '飞机', '舰', '兵器', '枪', '炮',
-                                   'tank', 'aircraft', 'ship', 'weapon',
-                                   '技术', '装备', '武器', '密码', '炸弹',
-                                   '火箭', '雷达', '声呐', '航母', '潜艇']):
-        return '装备与技术'
     if any(kw in name for kw in ['政策', '法案', '条约', '协议', '主义',
                                    '大屠杀', '罪行', '审判', '赔款',
                                    'policy', 'act', 'treaty', 'ideology',
