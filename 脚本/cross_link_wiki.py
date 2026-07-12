@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-LLM Wiki — 交叉链接增强（通用版）脚本
+二战 LLM Wiki — 交叉链接增强脚本
 为所有 wiki/ 文档扫描全文，识别提及的其他分类实体，追加 [[wikilink]] 反向链接
 人物 → 战役、战场 → 人物、战役 → 人物/战场…… 全自动匹配
 """
@@ -8,8 +8,8 @@ LLM Wiki — 交叉链接增强（通用版）脚本
 import os, re
 from pathlib import Path
 
-BASE_DIR = Path('.')  # ← 修改为你的库根目录
-WIKI_DIR = BASE_DIR / 'wiki'  # ← 修改为你的 wiki 工作区目录
+BASE_DIR = Path('/mnt/webdav/World War II')
+WIKI_DIR = BASE_DIR / 'wiki'
 
 
 def build_entity_index(wiki_dir):
@@ -100,7 +100,7 @@ def process_wiki_file(filepath, entity_index, source_cat, source_name):
 
 def main():
     print("=" * 50)
-    print("  LLM Wiki — 交叉链接增强（通用版）")
+    print("  二战 LLM Wiki — 交叉链接增强")
     print("=" * 50)
 
     print("\n📑 构建实体索引...")
